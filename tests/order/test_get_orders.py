@@ -7,8 +7,8 @@ from helpers import make_order
 class TestCreateOrders:
     @allure.description('Код операции:200')
     @allure.title('Проверка получения заказов пользователя с авторизацией')
-    def test_get_user_orders_with_autorisation_positive(self, register_new_user_and_return_login_password):
-        payload = register_new_user_and_return_login_password
+    def test_get_user_orders_with_autorisation_positive(self, generate_new_user_and_return_login_password):
+        payload = generate_new_user_and_return_login_password
         requests.post(f'{HOST}{REGISTER}', data=payload)
         response = requests.post(f'{HOST}{LOGIN}', data=payload)
         headers = {'Authorization': f'{response.json()['accessToken']}'}

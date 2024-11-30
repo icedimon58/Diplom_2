@@ -6,14 +6,14 @@ from helpers import generate_random_string
 
 
 class TestCreateOrders:
-    @pytest.mark.parametrize('ingridient', INGRIDIENTS_HASH)
+    @pytest.mark.parametrize('ingredient', INGRIDIENTS_HASH)
     @allure.description('Код операции:200')
     @allure.title('Проверка создания заказа с авторизацией')
-    def test_create_order_with_autorisation_positive(self, register_new_user_and_return_login_password, ingridient):
-        payload = register_new_user_and_return_login_password
+    def test_create_order_with_autorisation_positive(self, generate_new_user_and_return_login_password, ingredient):
+        payload = generate_new_user_and_return_login_password
         requests.post(f'{HOST}{REGISTER}', data=payload)
         response = requests.post(f'{HOST}{LOGIN}', data=payload)
-        payload_ingrid = {'ingredients': ingridient}
+        payload_ingrid = {'ingredients': ingredient}
         headers = {'Authorization': f'{response.json()['accessToken']}'}
         response = requests.post(f'{HOST}{ORDERS}', data=payload_ingrid, headers=headers)
         assert (response.status_code == 200 and response.json()['order']['owner']['name'] == payload['name'])
@@ -27,8 +27,8 @@ class TestCreateOrders:
 
     @allure.description('Код операции:400')
     @allure.title('Проверка создания заказа с авторизацией, но без ингридиентов')
-    def test_create_order_without_ingridients_negative(self, register_new_user_and_return_login_password):
-        payload = register_new_user_and_return_login_password
+    def test_create_order_without_ingridients_negative(self, generate_new_user_and_return_login_password):
+        payload = generate_new_user_and_return_login_password
         requests.post(f'{HOST}{REGISTER}', data=payload)
         response = requests.post(f'{HOST}{LOGIN}', data=payload)
         payload_ingrid = {'ingredients': ''}
@@ -38,8 +38,8 @@ class TestCreateOrders:
 
     @allure.description('Код операции:500')
     @allure.title('Проверка создания заказа с авторизацией и неверным хэшем')
-    def test_create_order_without_ingridients_negative(self, register_new_user_and_return_login_password):
-        payload = register_new_user_and_return_login_password
+    def test_create_order_without_ingridients_negative(self, generate_new_user_and_return_login_password):
+        payload = generate_new_user_and_return_login_password
         requests.post(f'{HOST}{REGISTER}', data=payload)
         response = requests.post(f'{HOST}{LOGIN}', data=payload)
         payload_ingrid = {'ingredients': generate_random_string(24)}
